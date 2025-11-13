@@ -3,6 +3,7 @@ import os.path
 import subprocess
 import sys
 from typing import List, Optional
+from google.genai import types
 
 def run_python_file(working_directory: str, file_path: str, args: Optional[List[str]] = None) -> str:
     """
@@ -79,3 +80,25 @@ def run_python_file(working_directory: str, file_path: str, args: Optional[List[
     except Exception as e:
         # Catch other potential exceptions 
         return f"Error: executing Python file: {e}"
+
+# --- Function Declaration (Schema) for LLM Tool Calling ---
+
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Executes a Python script with optional command-line arguments. Execution is limited to 30 seconds.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the Python file to execute, relative to the working directory.",
+            ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                description="An optional list of string arguments to pass to the Python script.",
+                items=types.Schema(type=types.Type.STRING),
+            ),
+        },
+        required=["file_path"],
+    ),
+)

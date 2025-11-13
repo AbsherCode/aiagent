@@ -1,5 +1,6 @@
 import os
 import os.path
+from google.genai import types
 
 def write_file(working_directory: str, file_path: str, content: str) -> str:
     """
@@ -43,3 +44,24 @@ def write_file(working_directory: str, file_path: str, content: str) -> str:
     except Exception as e:
         # Catch any unexpected I/O or OS errors and return a string description
         return f"Error: An unexpected error occurred while writing the file: {e}"
+    
+# --- Function Declaration (Schema) for LLM Tool Calling ---
+
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Writes content to a file within the restricted working directory, creating the file if it does not exist, or overwriting it if it does.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file to write to, relative to the working directory.",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="The complete string content to be written to the file.",
+            ),
+        },
+        required=["file_path", "content"],
+    ),
+)

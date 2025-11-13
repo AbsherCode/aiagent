@@ -1,6 +1,7 @@
 import os
 import os.path
 from typing import Optional
+from google.genai import types
 
 # We assume that config.py is importable from the environment path
 # (e.g., if the project root is added to sys.path, as done in tests.py)
@@ -55,3 +56,18 @@ def get_file_content(working_directory: str, file_path: str) -> str:
     except Exception as e:
         # Catch any unexpected I/O or OS errors and return a string description
         return f"Error: An unexpected error occurred while reading the file: {e}"
+    
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Reads the content of a specified file. The file content is truncated if it exceeds 10,000 characters.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file to read, relative to the working directory.",
+            ),
+        },
+        required=["file_path"],
+    ),
+)
